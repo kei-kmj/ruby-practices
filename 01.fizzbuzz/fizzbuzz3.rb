@@ -1,10 +1,10 @@
 (1..20).each do |i|
   if (i % 15).zero?
-    puts 'fizzbuzz'
+    puts 'FizzBuzz'
   elsif  (i % 3).zero?
-    puts 'fizz'
+    puts 'Fizz'
   elsif  (i % 5).zero?
-    puts 'buzz'
+    puts 'Buzz'
   else
     puts i
   end
