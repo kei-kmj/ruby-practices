@@ -36,7 +36,7 @@ current_date = firstday
 lastday = Date.new(year, month, -1)
 
 def print_color(current_date)
-  # エスケープシーケンスで色変更
+  # エスケープシーケンスで色を変更
   # 色変更は1箇所だけなので、ライブラリを使うまでもないと思った
   print "\e[30;47m#{current_date.strftime('%e')}\e[0m", "\s"
 end
