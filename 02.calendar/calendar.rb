@@ -1,13 +1,10 @@
 #! /usr/bin/env ruby
 require 'date'
 require 'optparse'
-opt = OptionParser.new
-opt.on('-m')
-opt.on('-y')
-opt.parse!(ARGV)
+params = ARGV.getopts('m:y:')
 
-month = ARGV[0].to_i
-year = ARGV[1].to_i
+month = params['m'].to_i
+year = params['y'].to_i
 
 if month.zero? && year.zero?
   month = Date.today.month
