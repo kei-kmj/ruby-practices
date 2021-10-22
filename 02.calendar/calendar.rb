@@ -3,15 +3,8 @@ require 'date'
 require 'optparse'
 params = ARGV.getopts('m:y:')
 
-month = params['m'].to_i
-year = params['y'].to_i
-
-if month.zero? && year.zero?
-  month = Date.today.month
-  year = Date.today.year
-end
-
-year = Date.today.year if year.zero?
+month = params['m']&.to_i || Date.today.month
+year = params['y']&.to_i || Date.today.year
 
 if month < 1 || month > 12
   puts "#{month} is neither a month number (1..12) nor a name"
@@ -29,7 +22,6 @@ puts '日 月 火 水 木 金 土'
 firstday = Date.new(year, month, 1)
 print "\s" * 3 * firstday.wday
 
-current_date = firstday
 lastday = Date.new(year, month, -1)
 
 def print_color(current_date)
@@ -38,13 +30,12 @@ def print_color(current_date)
   print "\e[30;47m#{current_date.strftime('%e')}\e[0m", "\s"
 end
 
-while current_date <= lastday
+(firstday..lastday).each do |current_date|
   if current_date == Date.today
     print_color(current_date)
   else
     print(current_date.strftime('%e'), "\s")
   end
-  print "\n" if current_date.saturday? == true
-  current_date += 1
+  print "\n" if current_date.saturday?
 end
 print "\n"
