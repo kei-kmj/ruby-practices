@@ -29,8 +29,8 @@ end
 
 total = 0
 frames.each_index do |index|
-  # 9フレーム目までの処理
   total +=
+    # 9フレーム目までの処理
     if index < 9
       if double_strike(frames, index)
         20 + frames[index + 2][0]
