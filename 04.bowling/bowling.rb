@@ -2,7 +2,6 @@
 score = ARGV[0]
 scores = score.split(',')
 shots = []
-shot = 1
 scores.each do |score|
   if score == "x"
     shots << 10
@@ -17,14 +16,27 @@ shots.each_slice(2) do |s|
   frames << s
 end
 
+def double_strike(frames, i)
+  frames[i] == [10, 0] && frames[i + 1] == [10, 0]
+end
+
+def single_strike(frames, i)
+  frames[i] == [10, 0]
+end
+
+def spare(frames, i)
+  frames[i].sum == 10
+end
+
 total = 0
-frames.each_with_index do |f, i|
+frames.each_index do |i|
+  #9フレーム目までの処理
   if i < 9
-    if frames[i] == [10, 0] && frames[i + 1] == [10, 0]
+    if double_strike(frames, i)
       total += 20 + frames[i + 2][0]
-    elsif frames[i] == [10, 0]
+    elsif single_strike(frames, i) 
       total += 10 + frames[i + 1].sum
-    elsif frames[i].sum == 10
+    elsif spare(frames, i)
       total += 10 + frames[i + 1][0]
     else
       total += frames[i].sum
