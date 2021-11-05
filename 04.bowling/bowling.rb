@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 score = ARGV[0]
 scores = score.split(',')
 shots = []
@@ -11,20 +13,18 @@ scores.each do |shot|
 end
 
 frames = []
-shots.each_slice(2) do |s|
-  frames << s
-end
+frames = shots.each_slice(2).to_a
 
-def double_strike(frames, index)
+def double_strike?(frames, index)
   frames[index] == [10, 0] && frames[index + 1] == [10, 0]
 end
 
-def single_strike(frames, index)
-  frames[index] == [10, 0]
+def single_strike?(frames, index)
+  double_strike?(frames, index) || frames[index] == [10, 0]
 end
 
-def spare(frames, index)
-  frames[index].sum == 10
+def spare?(frames, index)
+  single_strike?(frames, index) || frames[index].sum == 10
 end
 
 total = 0
@@ -32,11 +32,11 @@ frames.each_index do |index|
   total +=
     # 9フレーム目までの処理
     if index < 9
-      if double_strike(frames, index)
+      if double_strike?(frames, index)
         20 + frames[index + 2][0]
-      elsif single_strike(frames, index)
+      elsif single_strike?(frames, index)
         10 + frames[index + 1].sum
-      elsif spare(frames, index)
+      elsif spare?(frames, index)
         10 + frames[index + 1][0]
       else
         frames[index].sum
