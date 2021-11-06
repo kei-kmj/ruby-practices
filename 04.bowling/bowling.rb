@@ -36,7 +36,7 @@ frames.each_index do |index|
         20 + frames[index + 2][0]
       elsif single_strike?(frames, index)
         10 + frames[index + 1].sum
-      elsif spare?(frames,index)
+      elsif spare?(frames, index)
         10 + frames[index + 1][0]
       else
         frames[index].sum
