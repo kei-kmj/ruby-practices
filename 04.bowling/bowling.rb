@@ -20,11 +20,11 @@ def double_strike?(frames, index)
 end
 
 def single_strike?(frames, index)
-  double_strike?(frames, index) || frames[index] == [10, 0]
+  !double_strike?(frames, index) && frames[index] == [10, 0]
 end
 
 def spare?(frames, index)
-  single_strike?(frames, index) || frames[index].sum == 10
+  !single_strike?(frames, index) && frames[index].sum == 10
 end
 
 total = 0
@@ -36,7 +36,7 @@ frames.each_index do |index|
         20 + frames[index + 2][0]
       elsif single_strike?(frames, index)
         10 + frames[index + 1].sum
-      elsif spare?(frames, index)
+      elsif spare?(frames,index)
         10 + frames[index + 1][0]
       else
         frames[index].sum
