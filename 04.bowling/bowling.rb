@@ -12,38 +12,43 @@ scores.each do |shot|
   end
 end
 
-frames = []
 frames = shots.each_slice(2).to_a
 
-def double_strike?(frames, index)
-  frames[index] == [10, 0] && frames[index + 1] == [10, 0]
+def strike?(frame)
+  frame == [10, 0]
 end
 
-def single_strike?(frames, index)
-  !double_strike?(frames, index) && frames[index] == [10, 0]
+def double_strike?(frame, next_frame)
+  strike?(frame) && strike?(next_frame)
 end
 
-def spare?(frames, index)
-  !single_strike?(frames, index) && frames[index].sum == 10
+def single_strike?(frame, next_frame)
+  !double_strike?(frame, next_frame) && strike?(frame)
+end
+
+def spare?(frame, next_frame)
+  !single_strike?(frame, next_frame) && frame.sum == 10
 end
 
 total = 0
-frames.each_index do |index|
+
+(frames + [nil]).each_cons(3).each_with_index do |(frame, next_frame, after_next_frame), index|
   total +=
-    # 9フレーム目までの処理
-    if index < 9
-      if double_strike?(frames, index)
-        20 + frames[index + 2][0]
-      elsif single_strike?(frames, index)
-        10 + frames[index + 1].sum
-      elsif spare?(frames, index)
-        10 + frames[index + 1][0]
-      else
-        frames[index].sum
-      end
-    # 10フレーム目の処理
+    if double_strike?(frame, next_frame)
+      20 + after_next_frame[0]
+    elsif single_strike?(frame, next_frame)
+      10 + next_frame.sum
+    elsif spare?(frame, next_frame)
+      10 + next_frame[0]
     else
-      frames[index].sum
+      frame.sum
     end
+  break if index == 8
 end
-p total
+
+last_frame = []
+last_frame << frames[9]
+last_frame << frames[10] if frames[10]
+last_frame << frames[11] if frames[11]
+
+p total + last_frame.flatten.sum
