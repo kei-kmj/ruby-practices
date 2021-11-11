@@ -4,7 +4,7 @@ score = ARGV[0]
 scores = score.split(',')
 shots = []
 scores.each do |shot|
-  if shot == 'x'
+  if shot == 'X'
     shots << 10
     shots << 0
   else
@@ -26,8 +26,8 @@ def single_strike?(frame, next_frame)
   !double_strike?(frame, next_frame) && strike?(frame)
 end
 
-def spare?(frame, next_frame)
-  !single_strike?(frame, next_frame) && frame.sum == 10
+def spare?(frame)
+  !strike?(frame) && frame.sum == 10
 end
 
 total = 0
@@ -38,7 +38,7 @@ total = 0
       20 + after_next_frame[0]
     elsif single_strike?(frame, next_frame)
       10 + next_frame.sum
-    elsif spare?(frame, next_frame)
+    elsif spare?(frame)
       10 + next_frame[0]
     else
       frame.sum
