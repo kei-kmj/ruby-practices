@@ -9,7 +9,7 @@ NUMBER_OF_FILES = Dir[METACHARACTER].length
 NUMBER_OF_COLUMNS = 3
 NUMBER_OF_ROWS = (NUMBER_OF_FILES.to_f / NUMBER_OF_COLUMNS).ceil
 
-# ファイル/ディレクトリ名の中で一番文字数が多いものの文字数を取得するcd 05
+# ファイル/ディレクトリ名の中で一番文字数が多いものの文字数を取得する
 def max_character_count
   character_count = 0
   (0...NUMBER_OF_FILES).each do |index|
