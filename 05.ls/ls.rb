@@ -8,6 +8,7 @@ METACHARACTER = '*'
 NUMBER_OF_FILES = Dir[METACHARACTER].length
 NUMBER_OF_COLUMNS = 3
 NUMBER_OF_ROWS = (NUMBER_OF_FILES.to_f / NUMBER_OF_COLUMNS).ceil
+BLANK_SPACE = 3
 
 # ファイル/ディレクトリ名の中で一番文字数が多いものの文字数を取得する
 def max_character_count
@@ -24,7 +25,7 @@ def filename(column, row)
 end
 
 def add_space(column, row)
-  ' ' * (max_character_count + 3 - filename(column, row).length)
+  ' ' * (max_character_count + BLANK_SPACE - filename(column, row).length)
 end
 
 def main
