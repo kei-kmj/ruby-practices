@@ -5,37 +5,42 @@
 require 'fileutils'
 
 METACHARACTER = '*'
-NUMBER_OF_FILES = Dir[METACHARACTER].length
 NUMBER_OF_COLUMNS = 3
-NUMBER_OF_ROWS = (NUMBER_OF_FILES.to_f / NUMBER_OF_COLUMNS).ceil
-BLANK_SPACE = 3
-
-# ファイル/ディレクトリ名の中で一番文字数が多いものの文字数を取得する
-def max_character_count
-  character_count = 0
-  (0...NUMBER_OF_FILES).each do |index|
-    character_count = Dir[METACHARACTER][index].length\
-    if character_count < Dir[METACHARACTER][index].length
-  end
-  character_count
-end
-
-def filename(column, row)
-  Dir[METACHARACTER][column * NUMBER_OF_ROWS + row]
-end
-
-def add_space(column, row)
-  ' ' * (max_character_count + BLANK_SPACE - filename(column, row).length)
-end
+BLANK = 3
 
 def main
-  (0...NUMBER_OF_ROWS).each do |row|
+  (0...number_of_rows).each do |row|
     (0...NUMBER_OF_COLUMNS).each do |column|
-      print filename(column, row)
-      print add_space(column, row) if filename(column, row)
+      print_filename(row, column)
     end
     print "\n"
   end
+end
+
+def number_of_rows
+  (number_of_files.to_f / NUMBER_OF_COLUMNS).ceil
+end
+
+def number_of_files
+  Dir[METACHARACTER].length
+end
+
+def print_filename(row, column)
+  name = filename(row, column)
+  print name
+  print add_space(name) if name
+end
+
+def filename(row, column)
+  Dir[METACHARACTER][column * number_of_rows + row]
+end
+
+def add_space(name)
+  ' ' * (max_character_count + BLANK - name.length)
+end
+
+def max_character_count
+  Dir[METACHARACTER].max_by(&:length).length
 end
 
 main
