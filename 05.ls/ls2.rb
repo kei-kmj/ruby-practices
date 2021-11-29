@@ -2,48 +2,48 @@
 
 # ! /usr/bin/env ruby
 
-require 'fileutils'
 require 'optparse'
-opt = OptionParser.new
-opt.on('-a')
-params = {}
-opt.parse!(ARGV, into: params)
-p params[:a]
-
-def files(params)
-  Dir['.*', '*'] if params[:a]
-end
 
 NUMBER_OF_COLUMNS = 3
 BLANK = 3
-NUMBER_OF_FILES = files(params).length
-NUMBER_OF_ROWS =  (NUMBER_OF_FILES.to_f / NUMBER_OF_COLUMNS).ceil
 
-def main(params)
-  (0...NUMBER_OF_ROWS).each do |row|
+option = []
+opt = OptionParser.new
+opt.on('-a') { option << '-a' }
+opt.parse!(ARGV)
+
+files =
+  if option.include?('-a')
+    Dir.glob('*', File::FNM_DOTMATCH)
+  else
+    Dir.glob('*')
+  end
+
+def main(files)
+  (0...number_of_rows(files)).each do |row|
     (0...NUMBER_OF_COLUMNS).each do |column|
-      print_filename(row, column, params)
+      print_filename(row, column, files)
     end
     print "\n"
   end
 end
 
-def print_filename(row, column, params)
-  name = filename(row, column, params)
+def number_of_rows(files)
+  (number_of_files(files).to_f / NUMBER_OF_COLUMNS).ceil
+end
+
+def number_of_files(files)
+  files.length
+end
+
+def print_filename(row, column, files)
+  name = files[column * number_of_rows(files) + row]
   print name
-  print add_space(name, params) if name
+  print add_space(name, files) if name
 end
 
-def filename(row, column, params)
-  files(params)[column * NUMBER_OF_ROWS + row]
+def add_space(name, files)
+  ' ' * (files.max_by(&:length).length + BLANK - name.length)
 end
 
-def add_space(name, params)
-  ' ' * (max_character_count(params) + BLANK - name.length)
-end
-
-def max_character_count(params)
-  files(params).max_by(&:length).length
-end
-
-main(params)
+main(files)
