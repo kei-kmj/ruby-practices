@@ -7,10 +7,12 @@ require 'optparse'
 NUMBER_OF_COLUMNS = 3
 BLANK = 3
 
+def option
 option = []
 opt = OptionParser.new
 opt.on('-a') { option << '-a' }
 opt.parse!(ARGV)
+end
 
 files =
   if option.include?('-a')
