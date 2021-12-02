@@ -7,21 +7,25 @@ require 'optparse'
 NUMBER_OF_COLUMNS = 3
 BLANK = 3
 
-def option
-option = []
-opt = OptionParser.new
-opt.on('-a') { option << '-a' }
-opt.parse!(ARGV)
+def take_option
+  option = {}
+  opt = OptionParser.new
+  opt.on('-a') { |all| option[:a] = all }
+  opt.parse!(ARGV)
+  { a: option[:a] }
 end
 
-files =
-  if option.include?('-a')
+def take_files
+  option = take_option
+  if option[:a]
     Dir.glob('*', File::FNM_DOTMATCH)
   else
     Dir.glob('*')
   end
+end
 
-def main(files)
+def main
+  files = take_files
   (0...number_of_rows(files)).each do |row|
     (0...NUMBER_OF_COLUMNS).each do |column|
       print_filename(row, column, files)
@@ -48,4 +52,4 @@ def add_space(name, files)
   ' ' * (files.max_by(&:length).length + BLANK - name.length)
 end
 
-main(files)
+main
