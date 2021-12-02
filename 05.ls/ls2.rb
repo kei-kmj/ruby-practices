@@ -5,7 +5,7 @@
 require 'optparse'
 
 NUMBER_OF_COLUMNS = 3
-BLANK = 3
+WIDTH = 25
 
 def take_option
   option = {}
@@ -44,12 +44,7 @@ end
 
 def print_filename(row, column, files)
   name = files[column * number_of_rows(files) + row]
-  print name
-  print add_space(name, files) if name
-end
-
-def add_space(name, files)
-  ' ' * (files.max_by(&:length).length + BLANK - name.length)
+  print name.ljust(WIDTH) if name
 end
 
 main
