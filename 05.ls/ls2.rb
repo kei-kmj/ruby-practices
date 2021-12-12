@@ -10,6 +10,7 @@ FILENAME_WIDTH = 25
 NLINK_WIDTH = 2
 DETAIL_WIDTH = 5
 TIMESTAMP_WIDTH = 15
+HALF_A_YEAR = 182
 
 def take_option
   option = {}
@@ -70,7 +71,7 @@ end
 def print_type(row, column, files)
   name = files[column * number_of_rows(files) + row]
   type = File.ftype(name).to_s
-  case
+  case type
   when type == 'file'
     print '-'
   when type == 'fifo'
@@ -82,8 +83,8 @@ end
 
 def print_mode(row, column, files)
   name = files[column * number_of_rows(files) + row]
-  (-3).upto(-1) do |i|
-    mode = File.stat(name).mode.to_s(8)[i]
+  (-3).upto(-1) do |num|
+    mode = File.stat(name).mode.to_s(8)[num]
     print mode.gsub(/0|1|2|3|4|5|6|7/, '0' => '---', '1' => '--x', '2' => '-w-', '3' => '-wx',\
                                        '4' => 'r--', '5' => 'r-x', '6' => 'rw-', '7' => 'rwx')
   end
@@ -91,20 +92,20 @@ end
 
 def file_detail(row, column, files)
   name = files[column * number_of_rows(files) + row]
-  if name
-    print_type(row, column, files)
-    print_mode(row, column, files)
-    print File.stat(name).nlink.to_s.rjust(NLINK_WIDTH)
-    print Etc.getpwuid(File.stat(name).gid).name.to_s.rjust(DETAIL_WIDTH)
-    print Etc.getgrgid(File.stat(name).uid).name.to_s.rjust(DETAIL_WIDTH)
-    print File.size(name).to_s.rjust(DETAIL_WIDTH)
-    print_timestamp(row, column, files)
-  end
+  return unless name
+
+  print_type(row, column, files)
+  print_mode(row, column, files)
+  print File.stat(name).nlink.to_s.rjust(NLINK_WIDTH)
+  print Etc.getpwuid(File.stat(name).gid).name.to_s.rjust(DETAIL_WIDTH)
+  print Etc.getgrgid(File.stat(name).uid).name.to_s.rjust(DETAIL_WIDTH)
+  print File.size(name).to_s.rjust(DETAIL_WIDTH)
+  print_timestamp(row, column, files)
 end
 
 def print_timestamp(row, column, files)
   name = files[column * number_of_rows(files) + row]
-  if (Date.today - File.mtime(name).to_date).abs <= 182
+  if (Date.today - File.mtime(name).to_date).abs <= HALF_A_YEAR
     print File.mtime(name).strftime('%b %e %R ').to_s.rjust(TIMESTAMP_WIDTH)
   else
     print File.mtime(name).strftime('%b %e  %Y ').to_s.rjust(TIMESTAMP_WIDTH)
