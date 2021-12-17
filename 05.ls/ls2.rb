@@ -12,11 +12,11 @@ DETAIL_WIDTH = 5
 TIMESTAMP_WIDTH = 15
 HALF_A_YEAR = 182
 
-def take_option
+def option
   option = {}
   opt = OptionParser.new
   opt.on('-l') { |liner| option[:line] = liner }
-  opt.parse!(ARGV)
+  opt.parse(ARGV)
   { line: option[:line] }
 end
 
@@ -26,23 +26,13 @@ end
 
 def main
   files = take_files
-  option = take_option
-  if option[:line]
-    print_total(files)
-    (0...number_of_files(files)).each do |row|
-      (0...NUMBER_OF_COLUMNS).each do |column|
-        file_detail(row, column, files)
-        print_filename(row, column, files)
-      end
-      print "\n"
+  print_total(files)
+  (0...number_of_files(files)).each do |row|
+    (0...NUMBER_OF_COLUMNS).each do |column|
+      file_detail(row, column, files) if option[:line]
+      print_filename(row, column, files)
     end
-  else
-    (0...number_of_rows(files)).each do |row|
-      (0...NUMBER_OF_COLUMNS).each do |column|
-        print_filename(row, column, files)
-      end
-      print "\n"
-    end
+    print "\n"
   end
 end
 
