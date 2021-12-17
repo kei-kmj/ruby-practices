@@ -61,9 +61,8 @@ end
 
 def print_total(files)
   blocks = 0
-  (0...number_of_files(files)).each do |num|
-    name = files[num]
-    blocks += File.stat(name).blocks
+  (0...number_of_files(files)).sum do |num|
+    blocks += File.stat(files[num]).blocks
   end
   puts "total #{blocks}"
 end
@@ -105,11 +104,13 @@ end
 
 def print_timestamp(row, column, files)
   name = files[column * number_of_rows(files) + row]
-  if (Date.today - File.mtime(name).to_date).abs <= HALF_A_YEAR
-    print File.mtime(name).strftime('%b %e %R ').to_s.rjust(TIMESTAMP_WIDTH)
-  else
-    print File.mtime(name).strftime('%b %e  %Y ').to_s.rjust(TIMESTAMP_WIDTH)
-  end
+  difference = days_difference(name)
+  format = difference <= HALF_A_YEAR ? '%b %e %R ' : '%b %e  %Y '
+  print File.mtime(name).strftime(format).to_s.rjust(TIMESTAMP_WIDTH)
+end
+
+def days_difference(name)
+  (Date.today - File.mtime(name).to_date).abs
 end
 
 main
