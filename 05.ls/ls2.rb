@@ -46,13 +46,11 @@ end
 
 def number_of_files(files)
   files.length
-  end
+end
 
 def number_of_rows(files)
   (number_of_files(files).to_f / NUMBER_OF_COLUMNS).ceil
 end
-
-
 
 def print_type(name)
   type = File.ftype(name).to_s
