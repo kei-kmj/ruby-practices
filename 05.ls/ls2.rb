@@ -52,6 +52,18 @@ def number_of_rows(files)
   (number_of_files(files).to_f / NUMBER_OF_COLUMNS).ceil
 end
 
+def print_file_detail(name)
+  return unless name
+
+  print_type(name)
+  print_mode(name)
+  print File.stat(name).nlink.to_s.rjust(NLINK_WIDTH)
+  print Etc.getpwuid(File.stat(name).gid).name.to_s.rjust(DETAIL_WIDTH)
+  print Etc.getgrgid(File.stat(name).uid).name.to_s.rjust(DETAIL_WIDTH)
+  print File.size(name).to_s.rjust(DETAIL_WIDTH)
+  print_timestamp(name)
+end
+
 def print_type(name)
   type = File.ftype(name).to_s
   case type
@@ -70,18 +82,6 @@ def print_mode(name)
     print mode.gsub(/[0-7]/, '0' => '---', '1' => '--x', '2' => '-w-', '3' => '-wx',\
                              '4' => 'r--', '5' => 'r-x', '6' => 'rw-', '7' => 'rwx')
   end
-end
-
-def print_file_detail(name)
-  return unless name
-
-  print_type(name)
-  print_mode(name)
-  print File.stat(name).nlink.to_s.rjust(NLINK_WIDTH)
-  print Etc.getpwuid(File.stat(name).gid).name.to_s.rjust(DETAIL_WIDTH)
-  print Etc.getgrgid(File.stat(name).uid).name.to_s.rjust(DETAIL_WIDTH)
-  print File.size(name).to_s.rjust(DETAIL_WIDTH)
-  print_timestamp(name)
 end
 
 def print_timestamp(name)
