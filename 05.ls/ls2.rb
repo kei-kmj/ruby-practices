@@ -29,18 +29,14 @@ def main
   (0...number_of_rows(files)).each do |row|
     (0...NUMBER_OF_COLUMNS).each do |column|
       name = files[column * number_of_rows(files) + row]
-      print_file_detail(name) if option[:line]
-      print name
+      show_content(name)
     end
     print "\n"
   end
 end
 
 def print_total(files)
-  blocks = 0
-  (0...number_of_files(files)).sum do |num|
-    blocks += File.stat(files[num]).blocks
-  end
+  blocks = (0...number_of_files(files)).sum { |num| File.stat(files[num]).blocks }
   puts "total #{blocks}"
 end
 
@@ -52,14 +48,19 @@ def number_of_rows(files)
   (number_of_files(files).to_f / NUMBER_OF_COLUMNS).ceil
 end
 
+def show_content(name)
+  print_file_detail(name) if option[:line]
+  print name
+end
+
 def print_file_detail(name)
   return unless name
 
   print_type(name)
   print_mode(name)
   print File.stat(name).nlink.to_s.rjust(NLINK_WIDTH)
-  print Etc.getpwuid(File.stat(name).gid).name.to_s.rjust(DETAIL_WIDTH)
-  print Etc.getgrgid(File.stat(name).uid).name.to_s.rjust(DETAIL_WIDTH)
+  print Etc.getpwuid(File.stat(name).uid).name.to_s.rjust(DETAIL_WIDTH)
+  print Etc.getgrgid(File.stat(name).gid).name.to_s.rjust(DETAIL_WIDTH)
   print File.size(name).to_s.rjust(DETAIL_WIDTH)
   print_timestamp(name)
 end
@@ -85,13 +86,12 @@ def print_mode(name)
 end
 
 def print_timestamp(name)
-  difference = days_difference(name)
-  format = difference <= HALF_A_YEAR ? '%b %e %R ' : '%b %e  %Y '
+  format = within_half_a_year?(name) ? '%b %e %R ' : '%b %e  %Y '
   print File.mtime(name).strftime(format).to_s.rjust(TIMESTAMP_WIDTH)
 end
 
-def days_difference(name)
-  (Date.today - File.mtime(name).to_date).abs
+def within_half_a_year?(name)
+  (Date.today - File.mtime(name).to_date).abs <= HALF_A_YEAR
 end
 
 main
