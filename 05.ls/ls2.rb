@@ -19,10 +19,6 @@ def option
   { line: option[:line] }
 end
 
-def number_of_columns
-  option[:line] ? 1 : 3
-end
-
 def take_files
   Dir.glob('*')
 end
@@ -50,6 +46,10 @@ end
 
 def number_of_files(files)
   files.length
+end
+
+def number_of_columns
+  option[:line] ? 1 : 3
 end
 
 def show_content(name)
