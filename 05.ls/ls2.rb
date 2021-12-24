@@ -5,11 +5,11 @@ require 'optparse'
 require 'etc'
 require 'date'
 
-NUMBER_OF_COLUMNS = 1
 NLINK_WIDTH = 2
 DETAIL_WIDTH = 5
 TIMESTAMP_WIDTH = 15
 HALF_A_YEAR = 182
+MARGIN = 3
 
 def option
   option = {}
@@ -17,6 +17,10 @@ def option
   opt.on('-l') { |liner| option[:line] = liner }
   opt.parse(ARGV)
   { line: option[:line] }
+end
+
+def number_of_columns
+  option[:line] ? 1 : 3
 end
 
 def take_files
@@ -27,7 +31,7 @@ def main
   files = take_files
   print_total(files) if option[:line]
   (0...number_of_rows(files)).each do |row|
-    (0...NUMBER_OF_COLUMNS).each do |column|
+    (0...number_of_columns).each do |column|
       name = files[column * number_of_rows(files) + row]
       show_content(name)
     end
@@ -40,17 +44,17 @@ def print_total(files)
   puts "total #{blocks}"
 end
 
+def number_of_rows(files)
+  (number_of_files(files).to_f / number_of_columns).ceil
+end
+
 def number_of_files(files)
   files.length
 end
 
-def number_of_rows(files)
-  (number_of_files(files).to_f / NUMBER_OF_COLUMNS).ceil
-end
-
 def show_content(name)
   print_file_detail(name) if option[:line]
-  print name
+  print name.ljust(margin_of_filename) if name
 end
 
 def print_file_detail(name)
@@ -92,6 +96,10 @@ end
 
 def within_half_a_year?(name)
   (Date.today - File.mtime(name).to_date).abs <= HALF_A_YEAR
+end
+
+def margin_of_filename
+  take_files.max_by(&:length).length + MARGIN
 end
 
 main
