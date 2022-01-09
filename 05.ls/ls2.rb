@@ -17,11 +17,11 @@ def option
   opt.on('-a') { |a| option[:all] = a }
   opt.on('-r') { |r| option[:reverse] = r }
   opt.on('-l') { |l| option[:line] = l }
-  opt.order(ARGV)
+  opt.parse(ARGV)
   { all: option[:all], reverse: option[:reverse], line: option[:line] }
 end
 
-def all_files
+def files
   if option[:all]
     Dir.glob('*', File::FNM_DOTMATCH)
   else
@@ -31,9 +31,9 @@ end
 
 def take_files
   if option[:reverse]
-    all_files.reverse
+    files.reverse
   else
-    all_files
+    files
   end
 end
 
