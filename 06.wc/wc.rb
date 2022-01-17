@@ -4,6 +4,7 @@
 require 'optparse'
 
 WIDTH = 8
+MARGIN = 1
 
 def main
   option = ARGV.getopts('l')
@@ -11,10 +12,13 @@ def main
   if targets.empty?
     interactive_mode(option)
   else
+    # 文字間隔をtotal_bytesの文字数に合わせる
+    # 本当は行、単語数のそれぞれ文字間を計算してハッシュに入れたかった。
+    # 要素数1つなら上手く行ったが、2つ以上になったら引数をうまく指定できなかった。
     total_bytes = total_bytes(targets, option)
-    width = width(total_bytes)
-    calc_file(targets, option)
-    print_total(targets, option) if targets.size > 1
+
+    calc_file(targets, option, total_bytes)
+    print_total(targets, option, total_bytes) if targets.size > 1
   end
 end
 
@@ -36,17 +40,13 @@ def format(obj)
   obj.to_s.rjust(WIDTH)
 end
 
-def calc_file(targets, option)
+def calc_file(targets, option, total_bytes)
   targets.each do |file_name|
     file = File.read(file_name)
     lines = file.count("\n")
     words = file.split(/\s+/).size
     bytes = file.size
 
-    # 文字間隔をtotal_bytesの文字数に合わせる
-    # 本当は行、単語数のそれぞれ文字間を計算してハッシュに入れたかった。
-    # 要素数1つなら上手く行ったが、2つ以上になったら引数をうまく指定できなかった。
-    total_bytes = total_bytes(targets, option)
     width = width(total_bytes)
 
     print lines.to_s.rjust(width)
@@ -58,24 +58,27 @@ def calc_file(targets, option)
   end
 end
 
+def total_format(obj)
+  obj.to_s.rjust(width(total_bytes(targets, _option)))
+end
+
 # total_bytesのみ再利用するためメソッドにした
 def total_bytes(targets, _option)
   (0...targets.size).sum { |n| File.read(targets[n]).size }
 end
 
-# 再利用1:文字数を計算して文字間隔を指定する
+# 利用1:文字数を計算して文字間隔を指定する
 def width(total_bytes)
-  total_bytes.to_s.size + 1
+  total_bytes.to_s.size + MARGIN
 end
 
-def print_total(targets, option)
+def print_total(targets, option, total_bytes)
   total_lines = (0...targets.size).sum { |n| File.read(targets[n]).count("\n") }
   total_words = (0...targets.size).sum { |n| File.read(targets[n]).split(/\s+/).size }
-  # 再利用2:total_bytesの出力
-  total_bytes = total_bytes(targets, option)
+  # 利用2:total_bytes自体の出力
+  # total_bytes = total_bytes(targets, option)
   width = width(total_bytes)
 
-  # 処理a':処理としては疑似的なので、1回で書けないものかと思う（自分では出来ない）
   print total_lines.to_s.rjust(width)
   unless option['l']
     print total_words.to_s.rjust(width)
