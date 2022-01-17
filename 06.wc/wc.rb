@@ -13,7 +13,7 @@ def main
     interactive_mode(option)
   else
     # 文字間隔をtotal_bytesの文字数に合わせる
-    # 本当は行、単語数のそれぞれ文字間を計算してハッシュに入れたかった。
+    # 本当は行、単語数、バイト数それぞれの文字間を計算してハッシュに入れたかった。
     # 要素数1つなら上手く行ったが、2つ以上になったら引数をうまく指定できなかった。
     total_bytes = total_bytes(targets, option)
 
@@ -28,16 +28,21 @@ def interactive_mode(option)
   words = targets.split(/\s+/).size
   bytes = targets.size
 
-  print format(lines)
+  print format_interactive(lines)
   unless option['l'] # 1行で書いたらrubocopに叱られた
-    print format(words)
-    print format(bytes)
+    print format_interactive(words)
+    print format_interactive(bytes)
   end
   print "\n"
 end
 
-def format(obj)
-  obj.to_s.rjust(WIDTH)
+def format_interactive(object)
+  object.to_s.rjust(WIDTH)
+end
+
+# total_bytesのみ再利用するためメソッドにした
+def total_bytes(targets, _option)
+  (0...targets.size).sum { |n| File.read(targets[n]).size }
 end
 
 def calc_file(targets, option, total_bytes)
@@ -47,24 +52,13 @@ def calc_file(targets, option, total_bytes)
     words = file.split(/\s+/).size
     bytes = file.size
 
-    width = width(total_bytes)
-
-    print lines.to_s.rjust(width)
+    print format_files(lines, total_bytes)
     unless option['l'] # 1行で書いたらrubocopに叱られた
-      print words.to_s.rjust(width)
-      print bytes.to_s.rjust(width)
+      print format_files(words, total_bytes)
+      print format_files(bytes, total_bytes)
     end
     puts " #{file_name}"
   end
-end
-
-def total_format(obj)
-  obj.to_s.rjust(width(total_bytes(targets, _option)))
-end
-
-# total_bytesのみ再利用するためメソッドにした
-def total_bytes(targets, _option)
-  (0...targets.size).sum { |n| File.read(targets[n]).size }
 end
 
 # 利用1:文字数を計算して文字間隔を指定する
@@ -76,15 +70,17 @@ def print_total(targets, option, total_bytes)
   total_lines = (0...targets.size).sum { |n| File.read(targets[n]).count("\n") }
   total_words = (0...targets.size).sum { |n| File.read(targets[n]).split(/\s+/).size }
   # 利用2:total_bytes自体の出力
-  # total_bytes = total_bytes(targets, option)
-  width = width(total_bytes)
-
-  print total_lines.to_s.rjust(width)
+  print format_files(total_lines, total_bytes)
   unless option['l']
-    print total_words.to_s.rjust(width)
-    print total_bytes.to_s.rjust(width)
+    print format_files(total_words, total_bytes)
+    print format_files(total_bytes, total_bytes)
   end
   puts ' total'
+end
+
+def format_files(object, total_bytes)
+  width = width(total_bytes)
+  object.to_s.rjust(width)
 end
 
 main
