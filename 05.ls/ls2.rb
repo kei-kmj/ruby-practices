@@ -14,13 +14,27 @@ MARGIN = 3
 def option
   option = {}
   opt = OptionParser.new
-  opt.on('-l') { |liner| option[:line] = liner }
+  opt.on('-a') { |a| option[:all] = a }
+  opt.on('-r') { |r| option[:reverse] = r }
+  opt.on('-l') { |l| option[:line] = l }
   opt.parse(ARGV)
-  { line: option[:line] }
+  { all: option[:all], reverse: option[:reverse], line: option[:line] }
+end
+
+def files
+  if option[:all]
+    Dir.glob('*', File::FNM_DOTMATCH)
+  else
+    Dir.glob('*')
+  end
 end
 
 def take_files
-  Dir.glob('*')
+  if option[:reverse]
+    files.reverse
+  else
+    files
+  end
 end
 
 def main
