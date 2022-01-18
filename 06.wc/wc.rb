@@ -12,9 +12,9 @@ def main
   if targets.empty?
     interactive_mode(option)
   else
-    # 文字間隔をtotal_bytesの文字数に合わせる
+    # 出力内容の間隔をtotal_bytesの文字数に合わせる
     # 本当は行、単語数、バイト数それぞれの文字間を計算してハッシュに入れたかった。
-    # 要素数1つなら上手く行ったが、2つ以上になったら引数をうまく指定できなかった。
+    # 出来なかった。
     total_bytes = total_bytes(targets, option)
 
     calc_file(targets, option, total_bytes)
@@ -53,7 +53,7 @@ def calc_file(targets, option, total_bytes)
     bytes = file.size
 
     print format_files(lines, total_bytes)
-    unless option['l'] # 1行で書いたらrubocopに叱られた
+    unless option['l']
       print format_files(words, total_bytes)
       print format_files(bytes, total_bytes)
     end
@@ -61,7 +61,7 @@ def calc_file(targets, option, total_bytes)
   end
 end
 
-# 利用1:文字数を計算して文字間隔を指定する
+# 利用1:文字数を計算して出力内容の間隔を指定する
 def width(total_bytes)
   total_bytes.to_s.size + MARGIN
 end
