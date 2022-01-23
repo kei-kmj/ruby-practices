@@ -12,9 +12,6 @@ def main
   if targets.empty?
     interactive_mode(option)
   else
-    # 出力内容の間隔をtotal_bytesの文字数に合わせる
-    # 本当は行、単語数、バイト数それぞれの文字間を計算してハッシュに入れたかった。
-    # 出来なかった。
     total_bytes = total_bytes(targets, option)
 
     calc_file(targets, option, total_bytes)
@@ -29,7 +26,7 @@ def interactive_mode(option)
   bytes = targets.size
 
   print format_interactive(lines)
-  unless option['l'] # 1行で書いたらrubocopに叱られた
+  unless option['l']
     print format_interactive(words)
     print format_interactive(bytes)
   end
@@ -46,17 +43,17 @@ def total_bytes(targets, _option)
   targets.map { |target| File.read(target).size }.sum
 end
 
-def calc_file(targets, option, total_bytes)
+def calc_file(targets, option, width)
   targets.each do |file_name|
     file = File.read(file_name)
     lines = file.count("\n")
     words = file.split(/\s+/).size
     bytes = file.size
 
-    print format_files(lines, total_bytes)
+    print format_files(lines, width)
     unless option['l']
-      print format_files(words, total_bytes)
-      print format_files(bytes, total_bytes)
+      print format_files(words, width)
+      print format_files(bytes, width)
     end
     puts " #{file_name}"
   end
