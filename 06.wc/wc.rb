@@ -42,7 +42,8 @@ end
 
 # total_bytesのみ再利用するためメソッドにした
 def total_bytes(targets, _option)
-  (0...targets.size).sum { |n| File.read(targets[n]).size }
+  #(0...targets.size).sum { |n| File.read(targets[n]).size }
+  targets.map { |target| File.read(target).size }.sum
 end
 
 def calc_file(targets, option, total_bytes)
@@ -67,8 +68,9 @@ def width(total_bytes)
 end
 
 def print_total(targets, option, total_bytes)
-  total_lines = (0...targets.size).sum { |n| File.read(targets[n]).count("\n") }
-  total_words = (0...targets.size).sum { |n| File.read(targets[n]).split(/\s+/).size }
+
+  total_lines = targets.map { |target| File.read(target).count("\n") }.sum
+  total_words = targets.map { |target| File.read(target).split(/\s+/).size }.sum
   # 利用2:total_bytes自体の出力
   print format_files(total_lines, total_bytes)
   unless option['l']
