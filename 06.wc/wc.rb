@@ -54,6 +54,7 @@ def calc_file(targets, option, width)
       print format_files(output(targets)[:bytes], width)
     end
     puts " #{file_name}"
+
   end
 end
 
@@ -63,8 +64,13 @@ def width(total_bytes)
 end
 
 def print_total(targets, option, total_bytes)
-  total_lines = targets.map { |target| File.read(target).count("\n") }.sum
-  total_words = targets.map { |target| File.read(target).split(/\s+/).size }.sum
+  total_lines = 0
+  total_words = 0
+  targets.each do |filename|
+    targets = File.read(filename)
+    total_lines += output(targets)[:lines]
+    total_words += output(targets)[:words]
+  end
   # 利用2:total_bytes自体の出力
   print format_files(total_lines, total_bytes)
   unless option['l']
