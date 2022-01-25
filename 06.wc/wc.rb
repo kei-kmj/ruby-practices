@@ -13,17 +13,17 @@ def main
     interactive_mode(option)
   else
     # 出力物間のスペース数を、バイト数の合計値の桁数で調整する
-    width = width(targets)
+    width = calc_width(targets)
     calc_file(targets, option, width)
   end
 end
 
 def interactive_mode(option)
-  targets = $stdin.read
-  print format_interactive(output(targets)[:lines])
+  content = output_content($stdin.read)
+  print format_interactive(content[:lines])
   unless option['l']
-    print format_interactive(output(targets)[:words])
-    print format_interactive(output(targets)[:bytes])
+    print format_interactive(content[:words])
+    print format_interactive(content[:bytes])
   end
   print "\n"
 end
@@ -32,10 +32,10 @@ def format_interactive(object)
   object.to_s.rjust(WIDTH)
 end
 
-def output(content)
-  { lines: content.count("\n"),
-    words: content.split(/\s+/).size,
-    bytes: content.size }
+def output_content(targets)
+  { lines: targets.count("\n"),
+    words: targets.split(/\s+/).size,
+    bytes: targets.size }
 end
 
 def calc_file(targets, option, width)
@@ -43,15 +43,15 @@ def calc_file(targets, option, width)
   total_words = 0
   total_bytes = 0
   targets.each_with_index do |file_name, index|
-    content = File.read(file_name)
-    print format_files(output(content)[:lines], width)
-    print format_files(output(content)[:words], width) unless option['l']
-    print format_files(output(content)[:bytes], width) unless option['l']
+    content = output_content(File.read(file_name))
+    print format_files(content[:lines], width)
+    print format_files(content[:words], width) unless option['l']
+    print format_files(content[:bytes], width) unless option['l']
     puts " #{file_name}"
 
-    total_lines += output(content)[:lines]
-    total_words += output(content)[:words]
-    total_bytes += output(content)[:bytes]
+    total_lines += content[:lines]
+    total_words += content[:words]
+    total_bytes += content[:bytes]
     # ファイルが複数あるとき、ループの最後で合計を出力する
     next if index < targets.size - 1 || targets.size == 1
 
@@ -63,7 +63,7 @@ def calc_file(targets, option, width)
 end
 
 # byte計から文字数を計算して出力内容の間隔を指定する
-def width(targets)
+def calc_width(targets)
   targets.map { |target| File.read(target).size }.sum.to_s.size + MARGIN
 end
 
