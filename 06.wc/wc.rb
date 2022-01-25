@@ -19,7 +19,7 @@ def main
 end
 
 def interactive_mode(option)
-  content = output_content($stdin.read)
+  content = count_in($stdin.read)
   print format_interactive(content[:lines])
   unless option['l']
     print format_interactive(content[:words])
@@ -32,10 +32,10 @@ def format_interactive(object)
   object.to_s.rjust(WIDTH)
 end
 
-def output_content(targets)
-  { lines: targets.count("\n"),
-    words: targets.split(/\s+/).size,
-    bytes: targets.size }
+def count_in(content)
+  { lines: content.count("\n"),
+    words: content.split(/\s+/).size,
+    bytes: content.size }
 end
 
 def calc_file(targets, option, width)
@@ -43,7 +43,7 @@ def calc_file(targets, option, width)
   total_words = 0
   total_bytes = 0
   targets.each_with_index do |file_name, index|
-    content = output_content(File.read(file_name))
+    content = count_in(File.read(file_name))
     print format_files(content[:lines], width)
     print format_files(content[:words], width) unless option['l']
     print format_files(content[:bytes], width) unless option['l']
