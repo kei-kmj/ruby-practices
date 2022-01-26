@@ -53,7 +53,7 @@ def read_file_mode(targets, option, width)
     total_words += words
     total_bytes += bytes
   end
-  return unless targets.size > 1
+  return if targets.size == 1
 
   print_content(option, total_bytes, total_lines, total_words, width)
   puts ' total'
