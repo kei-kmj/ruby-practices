@@ -40,15 +40,19 @@ def count_in(content)
   ]
 end
 
+def calc_print(option, bytes, lines, words, width)
+  print format_files(lines, width)
+  print format_files(words, width) unless option['l']
+  print format_files(bytes, width) unless option['l']
+end
+
 def calc_file(targets, option, width)
   total_lines = 0
   total_words = 0
   total_bytes = 0
   targets.each do |file_name|
     lines, words, bytes = count_in(File.read(file_name))
-    print format_files(lines, width)
-    print format_files(words, width) unless option['l']
-    print format_files(bytes, width) unless option['l']
+    calc_print(option, bytes, lines, words, width)
     puts " #{file_name}"
 
     total_lines += lines
@@ -57,9 +61,7 @@ def calc_file(targets, option, width)
   end
   return unless targets.size > 1
 
-  print format_files(total_lines, width)
-  print format_files(total_words, width) unless option['l']
-  print format_files(total_bytes, width) unless option['l']
+  calc_print(option, total_bytes, total_lines, total_words, width)
   puts ' total'
 end
 
