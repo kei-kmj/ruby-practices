@@ -42,7 +42,7 @@ def calc_file(targets, option, width)
   total_lines = 0
   total_words = 0
   total_bytes = 0
-  targets.each_with_index do |file_name, index|
+  targets.each do |file_name|
     content = count_in(File.read(file_name))
     print format_files(content[:lines], width)
     print format_files(content[:words], width) unless option['l']
@@ -52,14 +52,13 @@ def calc_file(targets, option, width)
     total_lines += content[:lines]
     total_words += content[:words]
     total_bytes += content[:bytes]
-    # ファイルが複数あるとき、ループの最後で合計を出力する
-    next if index < targets.size - 1 || targets.size == 1
-
-    print format_files(total_lines, width)
-    print format_files(total_words, width) unless option['l']
-    print format_files(total_bytes, width) unless option['l']
-    puts ' total'
   end
+  return unless targets.size > 1
+
+  print format_files(total_lines, width)
+  print format_files(total_words, width) unless option['l']
+  print format_files(total_bytes, width) unless option['l']
+  puts ' total'
 end
 
 # byte計から文字数を計算して出力内容の間隔を指定する
