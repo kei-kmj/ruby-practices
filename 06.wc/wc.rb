@@ -19,11 +19,11 @@ def main
 end
 
 def interactive_mode(option)
-  content = count_in($stdin.read)
-  print format_interactive(content[:lines])
+  lines, words, bytes = count_in($stdin.read)
+  print format_interactive(lines)
   unless option['l']
-    print format_interactive(content[:words])
-    print format_interactive(content[:bytes])
+    print format_interactive(words)
+    print format_interactive(bytes)
   end
   print "\n"
 end
@@ -33,9 +33,11 @@ def format_interactive(object)
 end
 
 def count_in(content)
-  { lines: content.count("\n"),
-    words: content.split(/\s+/).size,
-    bytes: content.size }
+  [
+    content.count("\n"),
+    content.split(/\s+/).size,
+    content.size
+  ]
 end
 
 def calc_file(targets, option, width)
@@ -43,15 +45,15 @@ def calc_file(targets, option, width)
   total_words = 0
   total_bytes = 0
   targets.each do |file_name|
-    content = count_in(File.read(file_name))
-    print format_files(content[:lines], width)
-    print format_files(content[:words], width) unless option['l']
-    print format_files(content[:bytes], width) unless option['l']
+    lines, words, bytes = count_in(File.read(file_name))
+    print format_files(lines, width)
+    print format_files(words, width) unless option['l']
+    print format_files(bytes, width) unless option['l']
     puts " #{file_name}"
 
-    total_lines += content[:lines]
-    total_words += content[:words]
-    total_bytes += content[:bytes]
+    total_lines += lines
+    total_words += words
+    total_bytes += bytes
   end
   return unless targets.size > 1
 
