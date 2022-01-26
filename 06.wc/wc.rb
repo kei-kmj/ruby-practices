@@ -14,22 +14,14 @@ def main
   else
     # 出力物間のスペース数を、バイト数の合計値の桁数で調整する
     width = calc_width(targets)
-    calc_file(targets, option, width)
+    read_file_mode(targets, option, width)
   end
 end
 
 def interactive_mode(option)
   lines, words, bytes = count_in($stdin.read)
-  print format_interactive(lines)
-  unless option['l']
-    print format_interactive(words)
-    print format_interactive(bytes)
-  end
+  print_content(option, bytes, lines, words, WIDTH)
   print "\n"
-end
-
-def format_interactive(object)
-  object.to_s.rjust(WIDTH)
 end
 
 def count_in(content)
@@ -40,19 +32,21 @@ def count_in(content)
   ]
 end
 
-def calc_print(option, bytes, lines, words, width)
-  print format_files(lines, width)
-  print format_files(words, width) unless option['l']
-  print format_files(bytes, width) unless option['l']
+def print_content(option, bytes, lines, words, width)
+  print format_content(lines, width)
+  return if option['l']
+
+  print format_content(words, width)
+  print format_content(bytes, width)
 end
 
-def calc_file(targets, option, width)
+def read_file_mode(targets, option, width)
   total_lines = 0
   total_words = 0
   total_bytes = 0
   targets.each do |file_name|
     lines, words, bytes = count_in(File.read(file_name))
-    calc_print(option, bytes, lines, words, width)
+    print_content(option, bytes, lines, words, width)
     puts " #{file_name}"
 
     total_lines += lines
@@ -61,7 +55,7 @@ def calc_file(targets, option, width)
   end
   return unless targets.size > 1
 
-  calc_print(option, total_bytes, total_lines, total_words, width)
+  print_content(option, total_bytes, total_lines, total_words, width)
   puts ' total'
 end
 
@@ -70,7 +64,7 @@ def calc_width(targets)
   targets.map { |target| File.read(target).size }.sum.to_s.size + MARGIN
 end
 
-def format_files(object, width)
+def format_content(object, width)
   object.to_s.rjust(width)
 end
 
