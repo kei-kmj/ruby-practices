@@ -18,10 +18,6 @@ class Shots
   end
 end
 
-class Frame
-
-end
-
 class Game
   def initialize(argv)
     @shots = Shots.new(argv)
@@ -35,6 +31,18 @@ class Game
   end
 
   private
+
+  def calc_score(frame, next_frame, after_next_frame)
+    if double_strike?(frame, next_frame)
+      20 + after_next_frame[0]
+    elsif single_strike?(frame, next_frame)
+      10 + next_frame.sum
+    elsif spare?(frame, next_frame)
+      10 + next_frame[0]
+    else
+      frame.sum
+    end
+  end
 
   def strike?(frame)
     frame == [10, 0]
@@ -50,18 +58,6 @@ class Game
 
   def spare?(frame, next_frame)
     !single_strike?(frame, next_frame) && frame.sum == 10
-  end
-
-  def calc_score(frame, next_frame, after_next_frame)
-    if double_strike?(frame, next_frame)
-      20 + after_next_frame[0]
-    elsif single_strike?(frame, next_frame)
-      10 + next_frame.sum
-    elsif spare?(frame, next_frame)
-      10 + next_frame[0]
-    else
-      frame.sum
-    end
   end
 end
 
