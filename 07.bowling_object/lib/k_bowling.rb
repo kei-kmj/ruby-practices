@@ -4,6 +4,10 @@ class Game
   def initialize(shot)
     @shots = []
     @shot = shot.split(',')
+    fallen_pins
+  end
+
+  def fallen_pins
     @shot.each do |s|
       if s == 'X'
         @shots << 10 << 0
@@ -13,9 +17,9 @@ class Game
     end
   end
 
-  def score
-    @frames = @shots.each_slice(2).to_a
-    @frames.values_at(0..11).each_cons(3).sum do |frame, next_frame, after_next_frame|
+  def scores
+    frames = @shots.each_slice(2).to_a
+    frames.values_at(0..11).each_cons(3).sum do |frame, next_frame, after_next_frame|
       calc_score(frame, next_frame, after_next_frame)
     end
   end
@@ -51,4 +55,4 @@ class Game
   end
 end
 
-puts Game.new(ARGV.first).score
+puts Game.new(ARGV.first).scores
