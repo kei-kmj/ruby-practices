@@ -24,6 +24,11 @@ class GameTest < Minitest::Test
     assert_equal 134, game.scores
   end
 
+  def test_score144
+    game = Game.new('6,3,9,0,0,3,8,2,7,3,X,9,1,8,0,X,X,1,8')
+    assert_equal 144, game.scores
+  end
+
   def test_no_score
     game = Game.new('0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0')
     assert_equal 0, game.scores
