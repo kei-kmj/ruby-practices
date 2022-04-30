@@ -1,30 +1,30 @@
 # frozen_string_literal: true
 
 class Shots
-  def initialize(argv)
-    @argv = argv.split(',')
-  end
-
-  def fallen_pins
+  def initialize(marks)
+    @marks = marks.split(',')
     @shots = []
-    @argv.each do |a|
-      if a == 'X'
+    @marks.each do |m|
+      if m == 'X'
         @shots << 10 << 0
       else
-        @shots << a.to_i
+        @shots << m.to_i
       end
     end
-    @shots
+  end
+
+  def frames
+    @shots.each_slice(2).to_a
   end
 end
 
 class Game
-  def initialize(argv)
-    @shots = Shots.new(argv)
+  def initialize(marks)
+    @shots = Shots.new(marks)
   end
 
   def scores
-    frames = @shots.fallen_pins.each_slice(2).to_a
+    frames = @shots.frames
     frames.values_at(0..11).each_cons(3).sum do |frame, next_frame, after_next_frame|
       calc_score(frame, next_frame, after_next_frame)
     end
