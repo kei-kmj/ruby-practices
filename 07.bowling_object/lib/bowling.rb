@@ -13,7 +13,7 @@ class Shots
     end
   end
 
-  def frames
+  def slice
     @shots.each_slice(2).to_a
   end
 end
@@ -24,7 +24,7 @@ class Game
   end
 
   def scores
-    frames = @shots.frames
+    frames = @shots.slice
     frames.values_at(0..11).each_cons(3).sum do |frame, next_frame, after_next_frame|
       calc_score(frame, next_frame, after_next_frame)
     end
