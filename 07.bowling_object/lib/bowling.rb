@@ -2,19 +2,25 @@
 
 class Shots
   def initialize(marks)
-    @marks = marks.split(',')
-    @shots = []
-    @marks.each do |m|
-      if m == 'X'
-        @shots << 10 << 0
-      else
-        @shots << m.to_i
-      end
-    end
+    @shots = fallen_pins(marks)
   end
 
   def slice
     @shots.each_slice(2).to_a
+  end
+
+  private
+
+  def fallen_pins(marks)
+    shots = []
+    marks.split(',').each do |m|
+      if m == 'X'
+        shots << 10 << 0
+      else
+        shots << m.to_i
+      end
+    end
+    shots
   end
 end
 
