@@ -4,8 +4,8 @@ class ShortStyle
   NUMBER_OF_COLUMNS = 3
   WIDTH = 20
 
-  def initialize(opt)
-    @files = ExtractFiles.new opt
+  def initialize(option)
+    @files = ExtractFiles.new option
   end
 
   def draw
