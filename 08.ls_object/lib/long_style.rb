@@ -13,7 +13,7 @@ class LongStyle
   def draw
     files = @files.extract
     print_total(files)
-    (0...files.length).map do |n|
+    (0...files.length).each do |n|
       name = files[n]
       show_content(name)
     end
