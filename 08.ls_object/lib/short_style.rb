@@ -12,8 +12,8 @@ class ShortStyle
     files = @files.extract
     (0...number_of_rows(files)).each do |row|
       (0...NUMBER_OF_COLUMNS).each do |column|
-        name = files[column * number_of_rows(files) + row]
-        show_content(name)
+        file = files[column * number_of_rows(files) + row]
+        show_content(file)
       end
       print "\n"
     end
@@ -29,7 +29,7 @@ class ShortStyle
     files.length
   end
 
-  def show_content(name)
-    print name.ljust(WIDTH) if name
+  def show_content(file)
+    print file.ljust(WIDTH) if file
   end
 end
