@@ -13,23 +13,22 @@ class LongStyle
   def draw
     files = @files.extract
     print_total(files)
-    (0...files.length).each do |n|
-      name = files[n]
-      show_content(name)
+    files.each do |file|
+      show_content(file)
     end
   end
 
   private
 
-  def show_content(name)
-    print_type(name)
-    print_mode(name)
-    print File.stat(name).nlink.to_s.center(SMALL_WIDTH)
-    print Etc.getpwuid(File.stat(name).uid).name.to_s.ljust(WIDTH)
-    print Etc.getgrgid(File.stat(name).gid).name.to_s.ljust(WIDTH)
-    print File.size(name).to_s.rjust(SMALL_WIDTH)
-    print_timestamp(name)
-    print name
+  def show_content(file)
+    print_type(file)
+    print_mode(file)
+    print File.stat(file).nlink.to_s.center(SMALL_WIDTH)
+    print Etc.getpwuid(File.stat(file).uid).name.to_s.ljust(WIDTH)
+    print Etc.getgrgid(File.stat(file).gid).name.to_s.ljust(WIDTH)
+    print File.size(file).to_s.rjust(SMALL_WIDTH)
+    print_timestamp(file)
+    print file
     print "\n"
   end
 
@@ -38,8 +37,8 @@ class LongStyle
     puts "total #{blocks}"
   end
 
-  def print_type(name)
-    type = File.ftype(name).to_s
+  def print_type(file)
+    type = File.ftype(file).to_s
     case type
     when 'file'
       print '-'
@@ -50,20 +49,20 @@ class LongStyle
     end
   end
 
-  def print_mode(name)
+  def print_mode(file)
     (-3).upto(-1) do |num|
-      mode = File.stat(name).mode.to_s(8)[num]
+      mode = File.stat(file).mode.to_s(8)[num]
       print mode.gsub(/[0-7]/, '0' => '---', '1' => '--x', '2' => '-w-', '3' => '-wx', \
                                '4' => 'r--', '5' => 'r-x', '6' => 'rw-', '7' => 'rwx')
     end
   end
 
-  def print_timestamp(name)
-    format = within_half_a_year?(name) ? '%b %e %R ' : '%b %e  %Y '
-    print File.mtime(name).strftime(format).to_s.rjust(BIG_WIDTH)
+  def print_timestamp(file)
+    format = within_half_a_year?(file) ? '%b %e %R ' : '%b %e  %Y '
+    print File.mtime(file).strftime(format).to_s.rjust(BIG_WIDTH)
   end
 
-  def within_half_a_year?(name)
-    (Date.today - File.mtime(name).to_date).abs <= HALF_A_YEAR
+  def within_half_a_year?(file)
+    (Date.today - File.mtime(file).to_date).abs <= HALF_A_YEAR
   end
 end
