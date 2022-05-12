@@ -49,11 +49,22 @@ class LongStyle
     end
   end
 
+  MODE_HASH = {
+    '0' => '---',
+    '1' => '--x',
+    '2' => '-w-',
+    '3' => '-wx',
+    '4' => 'r--',
+    '5' => 'r-x',
+    '6' => 'rw-',
+    '7' => 'rwx'
+  }.freeze
+
+
   def print_mode(file)
     (-3).upto(-1) do |num|
       mode = File.stat(file).mode.to_s(8)[num]
-      print mode.gsub(/[0-7]/, '0' => '---', '1' => '--x', '2' => '-w-', '3' => '-wx', \
-                               '4' => 'r--', '5' => 'r-x', '6' => 'rw-', '7' => 'rwx')
+      print mode.gsub(/[0-7]/, MODE_HASH)
     end
   end
 
