@@ -33,7 +33,7 @@ class LongStyle
   end
 
   def print_total(files)
-    blocks = (0...files.length).sum { |num| File.stat(files[num]).blocks }
+    blocks = files.sum { |file| File.stat(file).blocks }
     puts "total #{blocks}"
   end
 
