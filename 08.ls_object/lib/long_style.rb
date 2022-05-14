@@ -1,48 +1,59 @@
 # frozen_string_literal: true
 
 class LongStyle
+  MARGIN = 2
   STAMP_WIDTH = 14
   HALF_A_YEAR = 182
 
-  def initialize(option)
-    @files = ExtractFiles.new option
+  def initialize(files)
+    @files = files
   end
 
   def draw
-    files = @files.extract
+    files = @files
     width = width(files)
 
     print_total(files)
     files.each do |file|
-      show_content(file,width)
+      show_content(file, width)
     end
   end
 
   private
 
-  def show_content(file,width)
+  def show_content(file, width)
+    nlink, uid, gid, file_size = content(file)
+    nlink_width, uid_width, gid_width, file_size_width = width
+
     print_type(file)
     print_mode(file)
-    print File.stat(file).nlink.to_s.rjust(width[0]), "\s"
-    print Etc.getpwuid(File.stat(file).uid).name.to_s.ljust(width[1])
-    print Etc.getgrgid(File.stat(file).gid).name.to_s.ljust(width[2])
-    print File.size(file).to_s.rjust(width[3])
+    print nlink.rjust(nlink_width), "\s"
+    print uid.ljust(uid_width)
+    print gid.ljust(gid_width)
+    print file_size.rjust(file_size_width)
     print_timestamp(file)
-    print file
-    print "\n"
+    print file, "\n"
+  end
+
+  def content(file)
+    content = []
+    content << File.stat(file).nlink.to_s
+    content << Etc.getpwuid(File.stat(file).uid).name.to_s
+    content << Etc.getgrgid(File.stat(file).gid).name.to_s
+    content << File.size(file).to_s
   end
 
   def print_total(files)
     blocks = files.sum { |file| File.stat(file).blocks }
     puts "total #{blocks}"
   end
-  MARGIN = 2
+
   def width(files)
     width = []
-    width << files.map {|file| File.stat(file).nlink.to_s.length}.max
-    width << files.max {|file| Etc.getpwuid(File.stat(file).uid).name.length}.length + MARGIN
-    width << files.max {|file| Etc.getgrgid(File.stat(file).gid).name.length}.length + MARGIN
-    width << files.map {|file| File.size(file).to_s.length}.max
+    width << files.map { |file| content(file)[0].length }.max
+    width << files.map { |file| content(file)[1].length }.max + MARGIN
+    width << files.map { |file| content(file)[2].length }.max + MARGIN
+    width << files.map { |file| content(file)[3].length }.max
   end
 
   def print_type(file)
