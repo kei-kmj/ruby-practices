@@ -22,49 +22,41 @@ class LongStyle
   private
 
   def show_content(file, width)
-    nlink, uid, gid, file_size = content(file)
     nlink_width, uid_width, gid_width, file_size_width = width
 
     print_type(file)
     print_mode(file)
-    print nlink.rjust(nlink_width), "\s"
-    print uid.ljust(uid_width)
-    print gid.ljust(gid_width)
-    print file_size.rjust(file_size_width)
+    print file.nlink.rjust(nlink_width), "\s"
+    print file.uid.ljust(uid_width)
+    print file.gid.ljust(gid_width)
+    print file.size.rjust(file_size_width)
     print_timestamp(file)
-    print file, "\n"
-  end
-
-  def content(file)
-    content = []
-    content << File.stat(file).nlink.to_s
-    content << Etc.getpwuid(File.stat(file).uid).name.to_s
-    content << Etc.getgrgid(File.stat(file).gid).name.to_s
-    content << File.size(file).to_s
+    print file.path, "\n"
   end
 
   def print_total(files)
-    blocks = files.sum { |file| File.stat(file).blocks }
+    blocks = files.sum { |file| file.stat.blocks }
     puts "total #{blocks}"
   end
 
   def width(files)
+    # { uid_max: files.map ...}
     width = []
-    width << files.map { |file| content(file)[0].length }.max
-    width << files.map { |file| content(file)[1].length }.max + MARGIN
-    width << files.map { |file| content(file)[2].length }.max + MARGIN
-    width << files.map { |file| content(file)[3].length }.max
+    width << files.map { |file| file.nlink.length }.max
+    width << files.map { |file| file.uid.length }.max + MARGIN
+    width << files.map { |file| file.gid.length }.max + MARGIN
+    width << files.map { |file| file.size.length }.max
   end
 
   def print_type(file)
-    type = File.ftype(file).to_s
-    case type
+    ftype = file.type
+    case ftype
     when 'file'
       print '-'
     when 'fifo'
       print 'p'
     else
-      print type[0]
+      print ftype[0]
     end
   end
 
@@ -81,7 +73,7 @@ class LongStyle
 
   def print_mode(file)
     (-3).upto(-1) do |num|
-      mode = File.stat(file).mode.to_s(8)[num]
+      mode = file.mode[num]
       print mode.gsub(/[0-7]/, MODE_HASH)
     end
     print "\s"
@@ -89,10 +81,10 @@ class LongStyle
 
   def print_timestamp(file)
     format = within_half_a_year?(file) ? '%b %e %R ' : '%b %e  %Y '
-    print File.mtime(file).strftime(format).to_s.rjust(STAMP_WIDTH)
+    print file.mtime.strftime(format).to_s.rjust(STAMP_WIDTH)
   end
 
   def within_half_a_year?(file)
-    (Date.today - File.mtime(file).to_date).abs <= HALF_A_YEAR
+    (Date.today - file.mtime).abs <= HALF_A_YEAR
   end
 end

@@ -1,23 +1,30 @@
 # frozen_string_literal: true
 
 class ListSegments
+  attr_reader :file
+
   def initialize(option)
     @option = option
-    files = if @option.reverse?
-              extract_files.reverse
-            else
-              extract_files
-            end
 
-    @information = if @option.line?
-                     LongStyle.new(files)
-                   else
-                     ShortStyle.new(files)
-                   end
+    file_order = if @option.reverse?
+                   extract_files.reverse
+                 else
+                   extract_files
+                 end
+
+    files = file_order.map do |file|
+      FileData.new(file)
+    end
+
+    @list = if @option.line?
+              LongStyle.new(files)
+            else
+              ShortStyle.new(files)
+            end
   end
 
   def draw
-    @information.draw
+    @list.draw
   end
 
   private

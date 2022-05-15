@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-MARGIN = 2
 class ShortStyle
+  MARGIN = 2
   NUMBER_OF_COLUMNS = 3
-  WIDTH = 20
 
   def initialize(files)
     @files = files
@@ -15,7 +14,7 @@ class ShortStyle
     (0...number_of_rows(files)).each do |row|
       (0...NUMBER_OF_COLUMNS).each do |column|
         file = files[column * number_of_rows(files) + row]
-        show_content(file, width)
+        show_content(file.path, width)
       end
       print "\n"
     end
@@ -36,8 +35,7 @@ class ShortStyle
   end
 
   def width(files)
-    files.max_by(&:length).length + MARGIN
+    filepath = files.map(&:path)
+    filepath.max_by(&:length).length + MARGIN
   end
-
-
 end
