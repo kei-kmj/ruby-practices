@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class LongStyle
-  MARGIN = 2
+  MARGIN = 1
   STAMP_WIDTH = 14
   HALF_A_YEAR = 182
 
@@ -40,7 +40,6 @@ class LongStyle
   end
 
   def width(files)
-    # { uid_max: files.map ...}
     width = []
     width << files.map { |file| file.nlink.length }.max
     width << files.map { |file| file.uid.length }.max + MARGIN
