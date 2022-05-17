@@ -16,15 +16,15 @@ class ListSegments
       FileData.new(file)
     end
 
-    @list = if @option.line?
-              LongStyle.new(files)
-            else
-              ShortStyle.new(files)
-            end
+    @yield = if @option.line?
+               LongStyle.new(files)
+             else
+               ShortStyle.new(files)
+             end
   end
 
   def draw
-    @list.draw
+    @yield.draw
   end
 
   private
