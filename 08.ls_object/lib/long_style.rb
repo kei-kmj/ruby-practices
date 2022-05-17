@@ -48,7 +48,7 @@ class LongStyle
   end
 
   def print_type(file)
-    ftype = file.type
+    ftype = file.ftype
     case ftype
     when 'file'
       print '-'
@@ -84,6 +84,6 @@ class LongStyle
   end
 
   def within_half_a_year?(file)
-    (Date.today - file.mtime).abs <= HALF_A_YEAR
+    (Date.today - file.mtime.to_date).abs <= HALF_A_YEAR
   end
 end
