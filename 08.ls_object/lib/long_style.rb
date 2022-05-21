@@ -2,7 +2,6 @@
 
 class LongStyle
   MARGIN = 1
-  STAMP_WIDTH = 14
   HALF_A_YEAR = 182
 
   def initialize(files)
@@ -11,7 +10,7 @@ class LongStyle
 
   def draw
     files = @files
-    width = width(files)
+    width = calc_width(files)
 
     print_total(files)
     files.each do |file|
@@ -26,10 +25,10 @@ class LongStyle
 
     print_type(file)
     print_mode(file)
-    print file.nlink.rjust(nlink_width), "\s"
-    print file.uid.ljust(uid_width)
-    print file.gid.ljust(gid_width)
-    print file.size.rjust(file_size_width)
+    print file.nlink.to_s.rjust(nlink_width), "\s"
+    print file.uid.name.ljust(uid_width)
+    print file.gid.name.ljust(gid_width)
+    print file.size.to_s.rjust(file_size_width), "\s"
     print_timestamp(file)
     print file.path, "\n"
   end
@@ -39,12 +38,13 @@ class LongStyle
     puts "total #{blocks}"
   end
 
-  def width(files)
+  def calc_width(files)
     width = []
-    width << files.map { |file| file.nlink.length }.max
-    width << files.map { |file| file.uid.length }.max + MARGIN
-    width << files.map { |file| file.gid.length }.max + MARGIN
-    width << files.map { |file| file.size.length }.max
+    width << files.map { |file| file.nlink.to_s.length }.max
+    width << files.map { |file| file.uid.name.length }.max + MARGIN
+    width << files.map { |file| file.gid.name.length }.max + MARGIN
+    width << files.map { |file| file.size.to_s.length }.max
+    width
   end
 
   def print_type(file)
@@ -80,7 +80,7 @@ class LongStyle
 
   def print_timestamp(file)
     format = within_half_a_year?(file) ? '%b %e %R ' : '%b %e  %Y '
-    print file.mtime.strftime(format).to_s.rjust(STAMP_WIDTH)
+    print file.mtime.strftime(format)
   end
 
   def within_half_a_year?(file)

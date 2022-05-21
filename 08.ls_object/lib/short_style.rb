@@ -10,10 +10,11 @@ class ShortStyle
 
   def draw
     files = @files
-    width = width(files)
+    width = calc_width(files)
     (0...number_of_rows(files)).each do |row|
       (0...NUMBER_OF_COLUMNS).each do |column|
-        file = files[column * number_of_rows(files) + row]
+        placement = column * number_of_rows(files) + row
+        file = files[placement]
         show_content(file.path, width)
       end
       print "\n"
@@ -34,7 +35,7 @@ class ShortStyle
     print file.ljust(width) if file
   end
 
-  def width(files)
+  def calc_width(files)
     filepath = files.map(&:path)
     filepath.max_by(&:length).length + MARGIN
   end

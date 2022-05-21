@@ -1,17 +1,38 @@
 # frozen_string_literal: true
 
 class FileData
-  attr_reader :path, :stat, :nlink, :uid, :gid, :size, :ftype, :mode, :mtime
+  attr_reader :path, :stat
 
   def initialize(filepath)
     @path = filepath
     @stat = File.stat(filepath)
-    @nlink = File.stat(filepath).nlink.to_s
-    @uid = Etc.getpwuid(File.stat(filepath).uid).name.to_s
-    @gid = Etc.getgrgid(File.stat(filepath).gid).name.to_s
-    @size = File.size(filepath).to_s
-    @ftype = File.ftype(filepath).to_s
-    @mode = File.stat(filepath).mode.to_s(8)
-    @mtime = File.mtime(filepath)
+  end
+
+  def nlink
+    @stat.nlink
+  end
+
+  def uid
+    Etc.getpwuid(@stat.uid)
+  end
+
+  def gid
+    Etc.getgrgid(@stat.gid)
+  end
+
+  def size
+    File.size(@path)
+  end
+
+  def ftype
+    File.ftype(@path)
+  end
+
+  def mode
+    @stat.mode.to_s(8)
+  end
+
+  def mtime
+    File.mtime(@path)
   end
 end
