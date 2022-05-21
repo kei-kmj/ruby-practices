@@ -14,20 +14,6 @@ class ListSegments
 
   private
 
-  def switch_style
-    @style = if @option.line?
-               LongStyle.new(@files_data_list)
-             else
-               ShortStyle.new(@files_data_list)
-             end
-  end
-
-  def files_data_list
-    @ordered_files.map do |filepath|
-      FileData.new(filepath)
-    end
-  end
-
   def ordered_files
     if @option.reverse?
       extract_files.reverse
@@ -38,5 +24,19 @@ class ListSegments
 
   def extract_files
     @option.all? ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
+  end
+
+  def files_data_list
+    @ordered_files.map do |filepath|
+      FileData.new(filepath)
+    end
+  end
+
+  def switch_style
+    @style = if @option.line?
+               LongStyle.new(@files_data_list)
+             else
+               ShortStyle.new(@files_data_list)
+             end
   end
 end
