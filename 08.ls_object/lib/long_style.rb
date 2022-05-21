@@ -72,7 +72,7 @@ class LongStyle
 
   def print_mode(file)
     (-3).upto(-1) do |num|
-      mode = file.mode[num]
+      mode = file.mode.to_s(8)[num]
       print mode.gsub(/[0-7]/, MODE_HASH)
     end
     print "\s"

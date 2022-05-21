@@ -3,12 +3,12 @@
 class ListSegments
   def initialize(option)
     @option = option
-    @ordered_files = ordered_files
-    @files_data_list = files_data_list
-    switch_style
   end
 
   def draw
+    @ordered_files = ordered_files
+    @files_data_list = files_data_list
+    switch_style
     @style.draw
   end
 

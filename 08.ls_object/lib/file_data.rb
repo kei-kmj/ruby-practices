@@ -5,7 +5,7 @@ class FileData
 
   def initialize(filepath)
     @path = filepath
-    @stat = File.stat(filepath)
+    @stat = File.stat(@path)
   end
 
   def nlink
@@ -29,7 +29,7 @@ class FileData
   end
 
   def mode
-    @stat.mode.to_s(8)
+    @stat.mode
   end
 
   def mtime
