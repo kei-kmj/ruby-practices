@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ListSegments
-
   def initialize(option)
     @option = option
     @ordered_files = ordered_files
