@@ -13,8 +13,8 @@ class ShortStyle
     width = calc_width(files)
     (0...number_of_rows(files)).each do |row|
       (0...NUMBER_OF_COLUMNS).each do |column|
-        placement = column * number_of_rows(files) + row
-        file = files[placement]
+        regulation = column * number_of_rows(files) + row
+        file = files[regulation]
         show_content(file.path, width)
       end
       print "\n"
