@@ -10,7 +10,7 @@ class LongStyle
 
   def draw
     files = @files
-    width = calc_width(files)
+    width = calc_width
 
     print_total(files)
     files.each do |file|
@@ -21,14 +21,12 @@ class LongStyle
   private
 
   def show_content(file, width)
-    nlink_width, uid_width, gid_width, file_size_width = width
-
     print_type(file)
     print_mode(file)
-    print file.nlink.to_s.rjust(nlink_width), "\s"
-    print file.uid.name.ljust(uid_width)
-    print file.gid.name.ljust(gid_width)
-    print file.size.to_s.rjust(file_size_width), "\s"
+    print file.nlink.to_s.rjust(width[:nlink]), "\s"
+    print file.uid.name.ljust(width[:uid])
+    print file.gid.name.ljust(width[:gid])
+    print file.size.to_s.rjust(width[:file_size]), "\s"
     print_timestamp(file)
     print file.path, "\n"
   end
@@ -38,13 +36,11 @@ class LongStyle
     puts "total #{blocks}"
   end
 
-  def calc_width(files)
-    width = []
-    width << files.map { |file| file.nlink.to_s.length }.max
-    width << files.map { |file| file.uid.name.length }.max + MARGIN
-    width << files.map { |file| file.gid.name.length }.max + MARGIN
-    width << files.map { |file| file.size.to_s.length }.max
-    width
+  def calc_width
+    { nlink: @files.map { |file| file.nlink.to_s.length }.max,
+      uid: @files.map { |file| file.uid.name.length }.max + MARGIN,
+      gid: @files.map { |file| file.gid.name.length }.max + MARGIN,
+      file_size: @files.map { |file| file.size.to_s.length }.max }
   end
 
   def print_type(file)
