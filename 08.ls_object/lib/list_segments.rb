@@ -14,6 +14,10 @@ class ListSegments
 
   private
 
+  def extract_files
+    @option.all? ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
+  end
+
   def files_data_list(ordered_files)
     ordered_files.map do |filepath|
       FileData.new(filepath)
@@ -26,9 +30,5 @@ class ListSegments
     else
       ShortStyle.new(files_data_list(ordered_files))
     end
-  end
-
-  def extract_files
-    @option.all? ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
   end
 end
