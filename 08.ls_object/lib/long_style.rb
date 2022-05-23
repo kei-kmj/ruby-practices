@@ -9,11 +9,10 @@ class LongStyle
   end
 
   def draw
-    files = @files
     width = calc_width
 
-    print_total(files)
-    files.each do |file|
+    print_total
+    @files.each do |file|
       show_content(file, width)
     end
   end
@@ -31,8 +30,8 @@ class LongStyle
     print file.path, "\n"
   end
 
-  def print_total(files)
-    blocks = files.sum { |file| file.stat.blocks }
+  def print_total
+    blocks = @files.sum { |file| file.stat.blocks }
     puts "total #{blocks}"
   end
 
