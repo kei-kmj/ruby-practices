@@ -9,7 +9,6 @@ class ShortStyle
   end
 
   def draw
-    # files = @files
     width = calc_width
     (0...number_of_rows).each do |row|
       (0...NUMBER_OF_COLUMNS).each do |column|
@@ -24,11 +23,7 @@ class ShortStyle
   private
 
   def number_of_rows
-    (number_of_files.to_f / NUMBER_OF_COLUMNS).ceil
-  end
-
-  def number_of_files
-    @files.length
+    (@files.length.to_f / NUMBER_OF_COLUMNS).ceil
   end
 
   def show_content(file, width)
