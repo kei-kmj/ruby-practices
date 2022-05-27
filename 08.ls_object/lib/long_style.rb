@@ -13,44 +13,44 @@ class LongStyle
 
     print_total
     @files.each do |file|
-      show_content(file, width)
+      print_content(file, width)
     end
   end
 
   private
 
-  def show_content(file, width)
-    print_type(file)
-    print_mode(file)
+  def print_content(file, width)
+    print type(file)
+    print mode(file)
     print file.nlink.to_s.rjust(width[:nlink]), "\s"
-    print file.uid.name.ljust(width[:uid])
-    print file.gid.name.ljust(width[:gid])
+    print file.user_name.ljust(width[:uid])
+    print file.group_name.ljust(width[:gid])
     print file.size.to_s.rjust(width[:file_size]), "\s"
-    print_timestamp(file)
+    print timestamp(file)
     puts file.path
   end
 
   def print_total
-    blocks = @files.sum { |file| file.stat.blocks }
+    blocks = @files.sum { |file| file.blocks }
     puts "total #{blocks}"
   end
 
   def calc_width
     { nlink: @files.map { |file| file.nlink.to_s.length }.max,
-      uid: @files.map { |file| file.uid.name.length }.max + MARGIN,
-      gid: @files.map { |file| file.gid.name.length }.max + MARGIN,
+      uid: @files.map { |file| file.user_name.length }.max + MARGIN,
+      gid: @files.map { |file| file.group_name.length }.max + MARGIN,
       file_size: @files.map { |file| file.size.to_s.length }.max }
   end
 
-  def print_type(file)
+  def type(file)
     ftype = file.ftype
     case ftype
     when 'file'
-      print '-'
+      '-'
     when 'fifo'
-      print 'p'
+      'p'
     else
-      print ftype[0]
+      ftype[0]
     end
   end
 
@@ -65,17 +65,17 @@ class LongStyle
     '7' => 'rwx'
   }.freeze
 
-  def print_mode(file)
+  def mode(file)
     (-3).upto(-1) do |num|
       mode = file.mode.to_s(8)[num]
       print mode.gsub(/[0-7]/, MODE_HASH)
     end
-    print "\s"
+    "\s"
   end
 
-  def print_timestamp(file)
+  def timestamp(file)
     format = within_half_a_year?(file) ? '%b %e %R ' : '%b %e  %Y '
-    print file.mtime.strftime(format)
+    file.mtime.strftime(format)
   end
 
   def within_half_a_year?(file)

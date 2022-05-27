@@ -18,17 +18,17 @@ class ListSegments
     @option.all? ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
   end
 
-  def files_data_list(ordered_files)
-    ordered_files.map do |filepath|
+  def files_data_list(files)
+    files.map do |filepath|
       FileData.new(filepath)
     end
   end
 
-  def switch_style(ordered_files)
+  def switch_style(files)
     if @option.line?
-      LongStyle.new(files_data_list(ordered_files))
+      LongStyle.new(files_data_list(files))
     else
-      ShortStyle.new(files_data_list(ordered_files))
+      ShortStyle.new(files_data_list(files))
     end
   end
 end

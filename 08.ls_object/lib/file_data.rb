@@ -1,23 +1,27 @@
 # frozen_string_literal: true
 
 class FileData
-  attr_reader :path, :stat
+  attr_reader :path
 
   def initialize(filepath)
     @path = filepath
     @stat = File.stat(@path)
   end
 
+  def blocks
+    @stat.blocks
+  end
+
   def nlink
     @stat.nlink
   end
 
-  def uid
-    Etc.getpwuid(@stat.uid)
+  def user_name
+    Etc.getpwuid(@stat.uid).name
   end
 
-  def gid
-    Etc.getgrgid(@stat.gid)
+  def group_name
+    Etc.getgrgid(@stat.gid).name
   end
 
   def size
