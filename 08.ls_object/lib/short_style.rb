@@ -15,17 +15,13 @@ class ShortStyle
       NUMBER_OF_COLUMNS.times do |column|
         regulation = column * number_of_rows + row
         file = @files[regulation]
-        show_content(file.path, width) if file
+        print file.path.ljust(width) if file
       end
       print "\n"
     end
   end
 
   private
-
-  def show_content(file, width)
-    print file.ljust(width)
-  end
 
   def calc_width
     filepath = @files.map(&:path)

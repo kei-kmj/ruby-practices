@@ -27,7 +27,7 @@ class LongStyle
     print file.gid.name.ljust(width[:gid])
     print file.size.to_s.rjust(width[:file_size]), "\s"
     print_timestamp(file)
-    print file.path, "\n"
+    puts file.path
   end
 
   def print_total
