@@ -11,8 +11,8 @@ class ShortStyle
   def draw
     width = calc_width
     number_of_rows = (@files.length.to_f / NUMBER_OF_COLUMNS).ceil
-    (0...number_of_rows).each do |row|
-      (0...NUMBER_OF_COLUMNS).each do |column|
+    number_of_rows.times do |row|
+      NUMBER_OF_COLUMNS.times do |column|
         regulation = column * number_of_rows + row
         file = @files[regulation]
         show_content(file.path, width) if file
